@@ -24,10 +24,12 @@ export async function POST(
     return Response.json({ error: true, message: "You must be 18 years or older to sign up" })
   }
 
-  let getUserFromUsername = await getData(`SELECT * FROM users WHERE phone=${request.phonenumber}`)
+  let getUserFromUsername = await getData(`SELECT * FROM users WHERE phone='${request.phonenumber.toString()}';`)
+  console.log(getUserFromUsername)
   if (getUserFromUsername.length > 0) {
     return Response.json({ error: true, message: "User already exists" })
   } else {
+    console.log(request)
     let password = request.password
     let hashedPassword = await bcrypt.hash(password, 10)
     /*CREATE TABLE users (
@@ -47,7 +49,7 @@ export async function POST(
     created_on TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
  */
-    let insertUser = await getData(`INSERT INTO users (name, phone, password, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, age, log) VALUES ('${request.name}', '${request.phonenumber.toString()}', '${hashedPassword}', '${shortid.generate()}', '${request.bloodtype}', NULL, true, ${0}, ${parseInt(request.weight)}, ${parseInt(request.height)}, ${parseInt(request.age)}, {})`)
+    let insertUser = await getData(`INSERT INTO users (name, phone, password, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, age, verified) VALUES ('${request.name}', '${request.phonenumber.toString()}', '${hashedPassword}', '${shortid.generate()}', '${request.bloodtype}', NULL, true, ${0}, ${parseInt(request.weight)}, ${parseInt(request.height)}, ${parseInt(request.age)}, false)`)
     return Response.json({ error: false, message: "Account created!" })
   }
 }
