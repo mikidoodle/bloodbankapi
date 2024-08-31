@@ -51,7 +51,10 @@ export async function POST(req: Request) {
     let insertUser = await getData(
       `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions ) VALUES ('${
         request.name
-      }' , '${request.phonenumber.toString()}', '${shortid.generate()}', '${
+      }' , '${request.phonenumber
+        .toString()
+        .replace("+91", "")
+        .replace(/\s/g, "")}', '${shortid.generate()}', '${
         request.bloodtype
       }', NULL, true, ${0}, ${parseInt(request.weight)}, ${parseInt(
         request.height
@@ -61,7 +64,11 @@ export async function POST(req: Request) {
         request.medications
       }', '${request.conditions}') returning name,phone,uuid;`
     );
-    console.log(insertUser)
-    return Response.json({ error: false, message: "Account created!", data: insertUser[0] });
+    console.log(insertUser);
+    return Response.json({
+      error: false,
+      message: "Account created!",
+      data: insertUser[0],
+    });
   }
 }

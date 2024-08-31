@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     }
   } else {
     let checkIFUserExists = await getData(
-      `SELECT * FROM users WHERE phone = '${phone}';`
+      `SELECT uuid FROM users WHERE phone = '${phone}';`
     );
     if (checkIFUserExists.length === 0) {
       if (allowSignup) {
