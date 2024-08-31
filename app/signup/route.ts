@@ -43,9 +43,9 @@ export async function POST(req: Request) {
 18	bloodtype	TEXT [DONE]
 19	uuid	TEXT [DONE]
 20	sex	VARCHAR
-21	medications	TEXT
+21	medications	TEXT[]
 22	notification	TEXT
-23	conditions	TEXT
+23	conditions	TEXT[]
 );
  */
     let insertUser = await getData(
@@ -59,8 +59,9 @@ export async function POST(req: Request) {
         request.affiliated
       }, '${request.affiliatedata}', ${request.distance}, '${request.sex}', '${
         request.medications
-      }', '${request.conditions}') RETURNING uuid;`
+      }', '${request.conditions}') returning name,phone,uuid;`
     );
-    return Response.json({ error: false, message: "Account created!", token: insertUser[0].uuid });
+    console.log(insertUser)
+    return Response.json({ error: false, message: "Account created!", data: insertUser[0] });
   }
 }
