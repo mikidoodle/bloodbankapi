@@ -51,7 +51,9 @@ export async function POST(req: Request) {
     if (checkIFUserExists.length === 0) {
       if (allowSignup) {
         let otp = Math.floor(1000 + Math.random() * 9000);
-        let sendOTPRecord = await sendOTP(phone, otp);
+        let sendOTPRecord = await sendOTP(phone, otp).catch((err) => {
+          return Response.json({ error: true, message: "Error sending OTP" });
+        });
         console.log(sendOTPRecord.sid);
         return Response.json({ error: false, otp: otp });
       } else {
@@ -59,7 +61,9 @@ export async function POST(req: Request) {
       }
     } else {
       let otp = Math.floor(1000 + Math.random() * 9000);
-      let sendOTPRecord = await sendOTP(phone, otp);
+      let sendOTPRecord = await sendOTP(phone, otp).catch((err) => {
+        return Response.json({ error: true, message: "Error sending OTP" });
+      });
       let setOTPRecord = getData(
         `UPDATE users SET otp = '${otp}' WHERE phone = '${phone}';`
       );
@@ -73,11 +77,19 @@ export async function POST(req: Request) {
 }
 
 async function sendOTP(phone: string, otp: number) {
+  //sanitise phone number
+  //remove spaces, country code
+  phone = phone.replace(/\s/g, "");
+  phone = phone.replace("+91", "");
   let send = await client.messages.create({
     body: `Thank you for signing up with JIPMER Blood Bank! Your OTP is ${otp}`,
     from: `+16467987493`,
     to: `+91${phone}`,
   });
-  console.log(send.sid);
-  return send.sid;
+  console.log(send);
+  try {
+    return send;
+  } catch (err) {
+    return err;
+  }
 }
