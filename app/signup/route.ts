@@ -45,11 +45,13 @@ export async function POST(req: Request) {
 20	sex	VARCHAR
 21	medications	TEXT[]
 22	notification	TEXT
-23	conditions	TEXT[]
+23	conditions	TEXT
+24  installed BOOLEAN
 );
  */
+
     let insertUser = await getData(
-      `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions ) VALUES ('${
+      `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions, installed) VALUES ('${
         request.name
       }' , '${request.phonenumber
         .toString()
@@ -60,10 +62,13 @@ export async function POST(req: Request) {
         request.height
       )}, '${request.dob}', false, null, ${request.birthdayhero}, ${
         request.affiliated
-      }, '${request.affiliatedata}', ${request.distance}, '${request.sex}', '${
-        request.medications
-      }', '${request.conditions}') returning name,phone,uuid;`
+      }, '${JSON.stringify(request.affiliatedata)}', ${request.distance}, '${
+        request.sex
+      }', '${request.medications}', '${
+        request.conditions
+      }', true) returning name,phone,uuid;`
     );
+
     console.log(insertUser);
     return Response.json({
       error: false,

@@ -9,23 +9,58 @@ export async function POST(req: Request) {
    * @params {string} bloodtype
    * @params {number} distance
    * @params {boolean} affiliated
+   * @params {boolean} unverified
    */
   let request = await req.json();
   let { token, months, verified, bloodtype, distance, affiliated } = request;
   let envCode = process.env.HQ_TOKEN;
   if (token === `hq-${envCode}`) {
-    let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users WHERE verified=${verified} AND affiliated = ${affiliated}`;
+    if(request.unverified === true) {
+      let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users where verified=false`;
+      let users = await getData(queryString);
+      return Response.json({ data: users });
+    }
+    let whereHasBeenUsed = false;
+    let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users ${
+      verified == true ? "WHERE verified = true" : ""
+    } ${
+      affiliated
+        ? `${verified === true ? "AND" : "WHERE"} affiliated = true`
+        : ""
+    }`;
     if (months?.trim() != "") {
       let date = new Date();
       date.setMonth(date.getMonth() - months);
-      queryString += ` AND lastdonated > '${date.toISOString()} OR lastdonated IS NULL'`;
+      queryString += ` ${
+        verified === true || whereHasBeenUsed ? "AND" : "WHERE"
+      } (lastdonated < '${date.toISOString()}' OR lastdonated IS NULL)`;
+
+      if (verified === false) {
+        whereHasBeenUsed = true;
+      }
     }
 
     if (distance?.trim() != "") {
-      queryString += ` AND distance < ${distance}`;
+      queryString += ` ${
+        verified === true || whereHasBeenUsed === true ? "AND" : "WHERE"
+      } distance < ${distance}`;
+
+      if (verified === false) {
+        whereHasBeenUsed = true;
+      }
+    }
+    if (bloodtype?.trim() != "") {
+      queryString += ` ${
+        verified === true || whereHasBeenUsed === true ? "AND" : "WHERE"
+      } bloodtype = '${bloodtype}'`;
+
+      if (verified === false) {
+        whereHasBeenUsed = true;
+      }
     }
     console.log(queryString);
     let users = await getData(queryString);
+    console.log(users);
     return Response.json({ data: users });
   } else {
     return Response.json({ error: true, message: "Unauthorized Access" });

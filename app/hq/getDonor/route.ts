@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   if (token === `hq-${envCode}`) {
     uuid = uuid.replace("bloodbank-", "");
     let donor = await getData(
-      `SELECT name,phone,bloodtype,lastdonated,totaldonated,age,verified FROM users WHERE uuid = '${uuid}';`
+      `SELECT name,phone,bloodtype,lastdonated,totaldonated,dob,verified FROM users WHERE uuid = '${uuid}';`
     );
     if (donor.length === 0) {
       return Response.json({ error: true, message: "Donor not found" });

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   if (token === `hq-${envCode}`) {
     uuid = uuid.replace("bloodbank-", "");
     let donor = await getData(
-      `SELECT name,phone,totaldonated,notification FROM users WHERE uuid = '${uuid}';`
+      `SELECT name,phone,totaldonated,notification,bloodtype FROM users WHERE uuid = '${uuid}';`
     );
     if (donor.length === 0) {
       return Response.json({ error: true, message: "Donor not found" });
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       const now = new Date();
       let updatedLog = await getData(
         `UPDATE users SET log = log || '${JSON.stringify({
-          x: `d-${bloodtype}`,
+          x: `d-${donor[0].bloodtype}`,
           y: now.toISOString(),
         })}'::jsonb WHERE uuid = '${uuid}';`
       );

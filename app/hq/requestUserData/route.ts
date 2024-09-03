@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   console.log(`loginCode: ${token}`);
   if (token === `hq-${envCode}`) {
     let donor = await getData(`SELECT * FROM users WHERE uuid = '${uuid}';`);
-    return Response.json({ data: donor });
+    return Response.json({ data: donor[0] });
   } else {
     return Response.json({ error: true, message: "Unauthorized" });
   }

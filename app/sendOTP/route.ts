@@ -26,6 +26,9 @@ export async function POST(req: Request) {
     userEnteredOTP: string;
   } = request;
 
+  phone = phone.replace(/\s/g, "");
+  phone = phone.replace("+91", "");
+  
   if (intentVerifyOTPlogin) {
     let checkIFUserExists = await getData(
       `SELECT phone,otp,uuid FROM users WHERE phone = '${phone}';`
@@ -60,6 +63,7 @@ export async function POST(req: Request) {
         return Response.json({ error: true, message: "User not found" });
       }
     } else {
+      console.log("User exists");
       let otp = Math.floor(1000 + Math.random() * 9000);
       let sendOTPRecord = await sendOTP(phone, otp).catch((err) => {
         return Response.json({ error: true, message: "Error sending OTP" });
@@ -79,8 +83,7 @@ export async function POST(req: Request) {
 async function sendOTP(phone: string, otp: number) {
   //sanitise phone number
   //remove spaces, country code
-  phone = phone.replace(/\s/g, "");
-  phone = phone.replace("+91", "");
+  console.log(phone)
   let send = await client.messages.create({
     body: `Thank you for signing up with JIPMER Blood Bank! Your OTP is ${otp}`,
     from: `+16467987493`,
