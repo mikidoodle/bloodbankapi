@@ -82,6 +82,7 @@ export async function POST(req: Request) {
           },
           sound: {
             critical: true,
+            name: 'default',
             volume: 1,
           },
         });
