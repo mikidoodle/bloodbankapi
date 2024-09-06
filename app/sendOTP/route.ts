@@ -25,10 +25,9 @@ export async function POST(req: Request) {
     intentVerifyOTPlogin: boolean;
     userEnteredOTP: string;
   } = request;
-
   phone = phone.replace(/\s/g, "");
   phone = phone.replace("+91", "");
-  
+
   if (intentVerifyOTPlogin) {
     let checkIFUserExists = await getData(
       `SELECT phone,otp,uuid FROM users WHERE phone = '${phone}';`
@@ -83,7 +82,7 @@ export async function POST(req: Request) {
 async function sendOTP(phone: string, otp: number) {
   //sanitise phone number
   //remove spaces, country code
-  console.log(phone)
+  console.log(phone);
   let send = await client.messages.create({
     body: `Thank you for signing up with JIPMER Blood Bank! Your OTP is ${otp}`,
     from: `+16467987493`,

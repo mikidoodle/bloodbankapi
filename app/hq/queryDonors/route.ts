@@ -10,12 +10,14 @@ export async function POST(req: Request) {
    * @params {number} distance
    * @params {boolean} affiliated
    * @params {boolean} unverified
+   * @params {boolean} name
    */
   let request = await req.json();
-  let { token, months, verified, bloodtype, distance, affiliated } = request;
+  let { token, months, verified, bloodtype, distance, affiliated, name } =
+    request;
   let envCode = process.env.HQ_TOKEN;
   if (token === `hq-${envCode}`) {
-    if(request.unverified === true) {
+    if (request.unverified === true) {
       let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users where verified=false`;
       let users = await getData(queryString);
       return Response.json({ data: users });
@@ -49,6 +51,7 @@ export async function POST(req: Request) {
         whereHasBeenUsed = true;
       }
     }
+
     if (bloodtype?.trim() != "") {
       queryString += ` ${
         verified === true || whereHasBeenUsed === true ? "AND" : "WHERE"
@@ -58,7 +61,17 @@ export async function POST(req: Request) {
         whereHasBeenUsed = true;
       }
     }
+    if (name?.trim() != "") {
+      queryString += ` ${
+        verified === true || whereHasBeenUsed === true ? "AND" : "WHERE"
+      } name ILIKE '%${name}%'`;
+
+      if (verified === false) {
+        whereHasBeenUsed = true;
+      }
+    }
     console.log(queryString);
+
     let users = await getData(queryString);
     console.log(users);
     return Response.json({ data: users });
