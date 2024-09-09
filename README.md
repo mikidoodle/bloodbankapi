@@ -7,6 +7,8 @@ Make sure you've set up the [app](https://github.com/mikidoodle/bloodbank) befor
 To begin, clone this repo and run `npm i` or `yarn install` or `bun install` or whatever.
 Then, rename `.env.example` to `.env`.
 
+Generate two random  8-16 character passwords using your favourite password generator and save it into the `HQ_TOKEN` and `HQ_SECRET` fields. You will use the password saved in `HQ_SECRET` to log in to the Blood Center side of the app.
+
 This API uses a couple of services:
 - Expo Notifications
 - Twilio SDK
