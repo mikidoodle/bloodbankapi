@@ -15,7 +15,7 @@ export async function POST(
     let getUserFromToken = await getData(`SELECT name,totaldonated,verified,lastdonated,created_on,log,installed FROM users WHERE uuid='${token}';`)
     if (getUserFromToken.length > 0) {
       //get total donators
-      let totalDonators = await getData(`SELECT COUNT(*) FROM users WHERE totaldonated > 0;`)
+      let totalDonators = await getData(`SELECT COUNT(*) FROM users WHERE verified=true;`)
       console.log(getUserFromToken[0])
       return Response.json({ error: false, message: "User found", data: {
         name: getUserFromToken[0].name,
