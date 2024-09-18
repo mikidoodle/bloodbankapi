@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       }
     } else {
       console.log("User exists");
-      let otp = phone == "95004999912" ? 0000 : Math.floor(1000 + Math.random() * 9000);
+      let otp = phone == "95004999912" ? 1234 : Math.floor(1000 + Math.random() * 9000);
       let sendOTPRecord = await sendOTP(phone, otp).catch((err) => {
         return Response.json({ error: true, message: "Error sending OTP" });
       });
