@@ -4,7 +4,7 @@ export const dynamic = "force-static";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
 let expo = new Expo({
   accessToken: process.env.EXPO_ACCESS_TOKEN,
-  useFcmV1: false, // this can be set to true in order to use the FCM v1 API
+  useFcmV1: true,
 });
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -35,6 +35,11 @@ export async function POST(req: Request) {
       now.getDate()
     );
     console.log(minimumDate);
+    console.log(`SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
+        months > 0
+          ? `AND (lastdonated < '${minimumDate.toISOString()}' OR lastdonated IS NULL)`
+          : ""
+      };`)
     let donors = await getData(
       `SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
         months > 0
@@ -63,10 +68,7 @@ export async function POST(req: Request) {
               sent = sent + 1;
             })
             .catch((err) => {
-              return Response.json({
-                error: true,
-                message: "Error sending OTP",
-              });
+              console.warn('Error pushing notif: ', err);
             });
           continue;
         }

@@ -18,6 +18,6 @@ export async function POST(req: Request) {
       token: uuid,
     });
   } else {
-    return Response.json({ error: true, message: "Login failed" });
+    return Response.json({ error: true, message: "Incorrect code." });
   }
 }
