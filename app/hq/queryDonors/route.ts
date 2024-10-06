@@ -16,6 +16,7 @@ export async function POST(req: Request) {
   let { token, months, verified, bloodtype, distance, affiliated, name } =
     request;
   let envCode = process.env.HQ_TOKEN;
+  let initialTimestamp = new Date();
   if (token === `hq-${envCode}`) {
     if (request.unverified === true) {
       let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users where verified=false`;
@@ -64,17 +65,23 @@ export async function POST(req: Request) {
     if (name?.trim() != "") {
       queryString += ` ${
         verified === true || whereHasBeenUsed === true ? "AND" : "WHERE"
-      } name ILIKE '%${name}%'`;
+      } name ILIKE '%${name}%' OR phone ILIKE '%${name}%'`;
 
       if (verified === false) {
         whereHasBeenUsed = true;
       }
     }
+    queryString += ` ORDER BY distance ASC`;
     console.log(queryString);
 
     let users = await getData(queryString);
     console.log(users);
-    return Response.json({ data: users });
+    let finalTimestamp = new Date();
+    console.log(
+      `Query took ${finalTimestamp.getTime() - initialTimestamp.getTime()}ms`
+    );
+    let timetaken = finalTimestamp.getTime() - initialTimestamp.getTime();
+    return Response.json({ data: users, time: timetaken  });
   } else {
     return Response.json({ error: true, message: "Unauthorized Access" });
   }

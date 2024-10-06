@@ -6,7 +6,7 @@ export async function POST(req: Request) {
    * @params {string} distance
    */
   let request = await req.json();
-  let { uuid, distance } = request;
+  let { uuid, distance, coords } = request;
   if (!uuid) {
     return Response.json({ error: true, message: "User not found" });
   } else {
@@ -17,6 +17,9 @@ export async function POST(req: Request) {
       await getData(
         `UPDATE users SET distance = '${distance}' WHERE uuid = '${uuid}';`
       );
+      await getData(
+        `UPDATE users SET coords = '${coords} WHERE uuid = '${uuid}';`
+      )
       if (user[0].installed === false) {
         await getData(
           `UPDATE users SET installed = true WHERE uuid = '${uuid}';`

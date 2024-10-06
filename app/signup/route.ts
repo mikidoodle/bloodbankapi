@@ -51,7 +51,7 @@ export async function POST(req: Request) {
  */
 
     let insertUser = await getData(
-      `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions, installed) VALUES ('${
+      `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions, installed, coords) VALUES ('${
         request.name
       }' , '${request.phonenumber
         .toString()
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         request.sex
       }', '${request.medications}', '${
         request.conditions
-      }', true) returning name,phone,uuid;`
+      }', true, ${request.coords}) returning name,phone,uuid;`
     );
 
     console.log(insertUser);
