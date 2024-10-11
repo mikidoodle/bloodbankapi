@@ -35,18 +35,14 @@ export async function POST(req: Request) {
       now.getDate()
     );
     console.log(minimumDate);
-    console.log(`SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
-        months > 0
-          ? `AND (lastdonated < '${minimumDate.toISOString()}' OR lastdonated IS NULL)`
-          : ""
-      };`)
-    let donors = await getData(
-      `SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
-        months > 0
-          ? `AND (lastdonated < '${minimumDate.toISOString()}' OR lastdonated IS NULL)`
-          : ""
-      };`
-    );
+    let prompt = `SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
+      months > 0
+        ? `AND (lastdonated < '${minimumDate.toISOString()}' OR lastdonated IS NULL)`
+        : ""
+    };`;
+    console.log(prompt);
+    let donors = await getData(prompt);
+    console.log(donors);
     if (donors.length === 0) {
       return Response.json({ error: true, message: "No donors found." });
     } else {
@@ -68,7 +64,7 @@ export async function POST(req: Request) {
               sent = sent + 1;
             })
             .catch((err) => {
-              console.warn('Error pushing notif: ', err);
+              console.warn("Error pushing notif: ", err);
             });
           continue;
         }
@@ -84,7 +80,7 @@ export async function POST(req: Request) {
           },
           sound: {
             critical: true,
-            name: 'default',
+            name: "default",
             volume: 1,
           },
         });
@@ -106,7 +102,9 @@ export async function POST(req: Request) {
       })();
       return Response.json({
         error: false,
-        message: `identified and notified ${sent} donor${sent == 1 ? "" : "s"}!`,
+        message: `identified and notified ${sent} donor${
+          sent == 1 ? "" : "s"
+        }!`,
       });
     }
   } else {

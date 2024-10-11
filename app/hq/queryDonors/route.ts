@@ -21,7 +21,9 @@ export async function POST(req: Request) {
     if (request.unverified === true) {
       let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users where verified=false`;
       let users = await getData(queryString);
-      return Response.json({ data: users });
+      let finalTimestamp = new Date();
+      let elapsed = finalTimestamp.getTime() - initialTimestamp.getTime();
+      return Response.json({ data: users, time: isNaN(elapsed) ? 0 : elapsed }); 
     }
     let whereHasBeenUsed = false;
     let queryString = `SELECT name,uuid,verified,bloodtype,distance,affiliated,phone,lastdonated,totaldonated,dob,sex FROM users ${
@@ -81,7 +83,7 @@ export async function POST(req: Request) {
       `Query took ${finalTimestamp.getTime() - initialTimestamp.getTime()}ms`
     );
     let timetaken = finalTimestamp.getTime() - initialTimestamp.getTime();
-    return Response.json({ data: users, time: timetaken  });
+    return Response.json({ data: users, time: isNaN(timetaken) ? 0 : timetaken });
   } else {
     return Response.json({ error: true, message: "Unauthorized Access" });
   }

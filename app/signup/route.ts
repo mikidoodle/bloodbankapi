@@ -49,25 +49,25 @@ export async function POST(req: Request) {
 24  installed BOOLEAN
 );
  */
+    let prompt = `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions, installed, coords) VALUES ('${
+      request.name
+    }' , '${request.phonenumber
+      .toString()
+      .replace("+91", "")
+      .replace(/\s/g, "")}', '${shortid.generate()}', '${
+      request.bloodtype
+    }', NULL, true, ${0}, ${parseInt(request.weight)}, ${parseInt(
+      request.height
+    )}, '${request.dob}', false, null, ${request.birthdayhero}, ${
+      request.affiliated
+    }, '${JSON.stringify(request.affiliatedata)}', ${request.distance}, '${
+      request.sex
+    }', '${request.medications}', '${request.conditions}', true, '${
+      request.coords
+    }') returning name,phone,uuid;`;
 
-    let insertUser = await getData(
-      `INSERT INTO users (name, phone, uuid, bloodtype, lastdonated, sms, totaldonated, weight, height, dob, verified, otp, birthdayhero, affiliated, affiliatedata, distance, sex, medications, conditions, installed, coords) VALUES ('${
-        request.name
-      }' , '${request.phonenumber
-        .toString()
-        .replace("+91", "")
-        .replace(/\s/g, "")}', '${shortid.generate()}', '${
-        request.bloodtype
-      }', NULL, true, ${0}, ${parseInt(request.weight)}, ${parseInt(
-        request.height
-      )}, '${request.dob}', false, null, ${request.birthdayhero}, ${
-        request.affiliated
-      }, '${JSON.stringify(request.affiliatedata)}', ${request.distance}, '${
-        request.sex
-      }', '${request.medications}', '${
-        request.conditions
-      }', true, ${request.coords}) returning name,phone,uuid;`
-    );
+    console.log(prompt);
+    let insertUser = await getData(prompt)
 
     console.log(insertUser);
     return Response.json({
