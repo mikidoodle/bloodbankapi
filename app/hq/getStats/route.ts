@@ -7,7 +7,7 @@ export async function POST(req: Request) {
    */
   //
   //auth
-  if(auth(req.headers.get("User-Agent") || "") === false) return Response.json({ error: true, message: "Unauthorized" });
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let { loginCode } = request;
   let envCode = process.env.HQ_TOKEN;
