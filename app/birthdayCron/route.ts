@@ -1,5 +1,4 @@
-import auth from "@/app/auth";
-import { getData } from "../../actions";
+import { getData } from "../actions";
 import bcrypt from "bcrypt";
 export const dynamic = "force-static";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
@@ -13,35 +12,20 @@ const client = require("twilio")(accountSid, authToken);
 
 export async function POST(req: Request) {
   /**
-   * @params {string} type
    * @params {string} token
-   * @params {number} units
-   * @params {number} months
-   * @params {string} contact
    */
-  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
-  let { type, token, units, months, contact } = request;
+  let { token } = request;
   let envCode = process.env.HQ_TOKEN;
-
-  //check if units and months are numbers
-  /*if (isNaN(units) || isNaN(months)) {
-    return Response.json({ error: true, message: "Invalid number of units or months." })
-  }*/
   if (token === `hq-${envCode}`) {
     let now = new Date();
-    //get time 3 months ago as a date object
-    let minimumDate = new Date(
-      now.getFullYear(),
-      now.getMonth() - parseInt(months),
-      now.getDate()
-    );
-    console.log(minimumDate);
-    let prompt = `SELECT name,notification,phone FROM users WHERE bloodtype = '${type}' ${
-      months > 0
-        ? `AND (lastdonated < '${minimumDate.toISOString()}' OR lastdonated IS NULL)`
-        : ""
-    };`;
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const prompt = `SELECT name, phone, notification
+  FROM users
+  WHERE EXTRACT(MONTH FROM dob) = ${month}
+    AND EXTRACT(DAY FROM dob) = ${day}; AND installed = true`;
+
     console.log(prompt);
     let donors = await getData(prompt);
     console.log(donors);
@@ -58,9 +42,7 @@ export async function POST(req: Request) {
           );
           let sendOTPRecord = await sendSMS(
             notificationobj.phone,
-            units,
-            type,
-            contact
+            notificationobj.name
           )
             .then((res) => {
               sent = sent + 1;
@@ -72,16 +54,14 @@ export async function POST(req: Request) {
         }
         messages.push({
           to: pushToken,
-          subtitle: `Blood Center requires ${units} unit${
-            units == 1 ? "" : "s"
-          } of ${type} blood.`,
-          body: "Please donate if you can. Click to call.",
-          priority: "high",
+          subtitle: `Happy Birthday, ${notificationobj.name}! 🎉`,
+          body: "Celebrate your birthday by donating blood at the JIPMER Blood Center today!",
+          priority: "normal",
           data: {
-            url: `tel:+91${contact}`,
+            url: `tel:+914132296666`,
           },
           sound: {
-            critical: true,
+            critical: false,
             name: "default",
             volume: 1,
           },
@@ -114,20 +94,13 @@ export async function POST(req: Request) {
   }
 }
 
-async function sendSMS(
-  phone: string,
-  units: number,
-  type: string,
-  contact: string
-) {
+async function sendSMS(phone: string, name: string) {
   //sanitise phone number
   //remove spaces, country code
   phone = phone.replace(/\s/g, "");
   phone = phone.replace("+91", "");
   let send = await client.messages.create({
-    body: `JIPMER Blood Center requires ${units} unit${
-      units == 1 ? "" : "s"
-    } of ${type} blood. Please contact ${contact} if you can donate.`,
+    body: `Happy Birthday ${name}! Celebrate your birthday by donating blood at the JIPMER Blood Center today!`,
     from: `+16467987493`,
     to: `+91${phone}`,
   });

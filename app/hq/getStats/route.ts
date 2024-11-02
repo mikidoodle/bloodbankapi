@@ -1,6 +1,5 @@
-import { log } from "console";
+import auth from "@/app/auth";
 import { getData } from "../../actions";
-import bcrypt from "bcrypt";
 export const dynamic = "force-static";
 export async function POST(req: Request) {
   /**
@@ -8,6 +7,7 @@ export async function POST(req: Request) {
    */
   //
   //auth
+  if(auth(req.headers.get("User-Agent") || "") === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let { loginCode } = request;
   let envCode = process.env.HQ_TOKEN;

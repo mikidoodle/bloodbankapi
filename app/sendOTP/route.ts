@@ -1,6 +1,8 @@
 import { log } from "console";
 import { getData } from "../actions";
 import bcrypt from "bcrypt";
+import auth from "../auth";
+import { userAgent } from "next/server";
 export const dynamic = "force-static";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -12,7 +14,8 @@ export async function POST(req: Request) {
    * @params {boolean} allowSignup
    * @params {boolean} intentVerifyOTPlogin
    */
-  //
+  
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let {
     phone,

@@ -2,6 +2,7 @@ import { getData } from "../actions";
 import bcrypt from "bcrypt";
 export const dynamic = "force-static";
 import shortid from "shortid";
+import auth from "../auth";
 export async function POST(req: Request) {
   /**
    * @params {string} phonenumber
@@ -11,7 +12,10 @@ export async function POST(req: Request) {
    * @params {string} height
    * @params {string} age
    * @params {string} bloodtype
+   * @params {string} lookupid
    */
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
+  
   const request = await req.json();
 
   let getUserFromUsername = await getData(
@@ -65,10 +69,13 @@ export async function POST(req: Request) {
     }', '${request.medications}', '${request.conditions}', true, '${
       request.coords
     }') returning name,phone,uuid;`;
-
     console.log(prompt);
-    let insertUser = await getData(prompt)
 
+    let insertUser = await getData(prompt);
+
+    if (request.lookupid !== "") {
+      await getData(`DELETE from localups WHERE uuid='${request.lookupid}';`);
+    }
     console.log(insertUser);
     return Response.json({
       error: false,

@@ -1,3 +1,4 @@
+import auth from "@/app/auth";
 import { getData } from "../../actions";
 import bcrypt from "bcrypt";
 export const dynamic = "force-static";
@@ -11,6 +12,7 @@ export async function POST(req: Request) {
    * @params {string} token
    * @params {string} uuid
    */
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let { token, uuid, bloodtype } = request;
   let envCode = process.env.HQ_TOKEN;

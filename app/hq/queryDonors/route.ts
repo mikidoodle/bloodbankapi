@@ -1,3 +1,4 @@
+import auth from "@/app/auth";
 import { getData } from "../../actions";
 import bcrypt from "bcrypt";
 export const dynamic = "force-static";
@@ -12,6 +13,7 @@ export async function POST(req: Request) {
    * @params {boolean} unverified
    * @params {boolean} name
    */
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let { token, months, verified, bloodtype, distance, affiliated, name } =
     request;

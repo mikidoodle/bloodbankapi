@@ -1,12 +1,15 @@
 import { getData } from "../actions";
+import auth from "../auth";
 export const dynamic = "force-static";
 export async function POST(req: Request) {
   /**
    * @params {string} uuid,
    * @params {string} distance
    */
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
-  let { uuid, distance, coords } = request;
+  let { uuid, distance, coords, lookupid } = request;
+  console.log(`EXP: ${uuid} is ${distance} km away, coords/address: ${coords}`);
   if (!uuid) {
     return Response.json({ error: true, message: "User not found" });
   } else {
@@ -18,11 +21,16 @@ export async function POST(req: Request) {
         `UPDATE users SET distance = '${distance}' WHERE uuid = '${uuid}';`
       );
       await getData(
-        `UPDATE users SET coords = '${coords} WHERE uuid = '${uuid}';`
-      )
+        `UPDATE users SET coords = '${coords}' WHERE uuid = '${uuid}';`
+      );
       if (user[0].installed === false) {
         await getData(
           `UPDATE users SET installed = true WHERE uuid = '${uuid}';`
+        );
+      }
+      if (lookupid !== "") {
+        await getData(
+          `DELETE FROM localups WHERE uuid = '${lookupid}';`
         );
       }
       return Response.json({ error: false, message: "Distance updated!" });
