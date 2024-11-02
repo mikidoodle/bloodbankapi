@@ -14,7 +14,7 @@ export async function POST(req: Request) {
    * @params {boolean} allowSignup
    * @params {boolean} intentVerifyOTPlogin
    */
-  
+  console.log(userAgent(req))
   if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
   let request = await req.json();
   let {
