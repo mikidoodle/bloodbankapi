@@ -1,7 +1,7 @@
 import auth from "@/app/auth";
 import { getData } from "../../actions";
 import bcrypt from "bcrypt";
-export const dynamic = "force-static";
+export const dynamic = "auto";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
 let expo = new Expo({
   accessToken: process.env.EXPO_ACCESS_TOKEN,
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
    * @params {number} months
    * @params {string} contact
    */
-  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" }, {status: 403});
   let request = await req.json();
   let { type, token, units, months, contact } = request;
   let envCode = process.env.HQ_TOKEN;

@@ -1,6 +1,6 @@
 import { getData } from "../actions";
 import bcrypt from "bcrypt";
-export const dynamic = "force-static";
+export const dynamic = "auto";
 import shortid from "shortid";
 import auth from "../auth";
 export async function POST(req: Request) {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
    * @params {string} bloodtype
    * @params {string} lookupid
    */
-  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" }, {status: 403});
   
   const request = await req.json();
 

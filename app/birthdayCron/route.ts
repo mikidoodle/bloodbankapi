@@ -1,6 +1,6 @@
 import { getData } from "../actions";
 import bcrypt from "bcrypt";
-export const dynamic = "force-static";
+export const dynamic = "auto";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
 let expo = new Expo({
   accessToken: process.env.EXPO_ACCESS_TOKEN,

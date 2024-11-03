@@ -2,13 +2,13 @@ import { log } from "console";
 import { getData } from "../../actions";
 import bcrypt from "bcrypt";
 import auth from "@/app/auth";
-export const dynamic = "force-static";
+export const dynamic = "auto";
 export async function POST(req: Request) {
   /**
    * @params {string} loginCode
    */
   //
-
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" }, {status: 403});
   let request = await req.json();
   let { loginCode } = request;
   let envCode: any = process.env.HQ_SECRET;

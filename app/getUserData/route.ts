@@ -1,6 +1,6 @@
 import { getData } from "../actions"
 import auth from "../auth";
-export const dynamic = 'force-static'
+export const dynamic = 'auto'
 export async function POST(
   req: Request
 ) {
@@ -8,7 +8,7 @@ export async function POST(
    * @params {string} uuid,
    * @params {string} token
    */
-  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" }, {status: 403});
   let request = await req.json()
   let { token } = request
   if (!token) {

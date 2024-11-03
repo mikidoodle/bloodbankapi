@@ -1,5 +1,5 @@
 import { getData } from "../actions";
-export const dynamic = "force-static";
+export const dynamic = "auto";
 import shortid from "shortid";
 import auth from "../auth";
 export async function POST(req: Request) {
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
    */
   let request = await req.json();
   let { address, uuid } = request;
-  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" });
+  if(auth(req) === false) return Response.json({ error: true, message: "Unauthorized" }, {status: 403});
   let shortuuid = uuid === "" ? shortid.generate() : uuid;
   console.log("address", address);
   let userGeocodeCount = 0;
