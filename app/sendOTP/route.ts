@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         let sendOTPRecord = await sendOTP(phone, otp).catch((err) => {
           return Response.json({ error: true, message: "Error sending OTP" });
         });
-        console.log(sendOTPRecord.sid);
+        console.log(sendOTPRecord.sid, otp);
         return Response.json({ error: false, otp: otp });
       } else {
         return Response.json({ error: true, message: "User not found" });
