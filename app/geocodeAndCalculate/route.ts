@@ -38,6 +38,8 @@ export async function POST(req: Request) {
   });
   let geocodeResponse = await geocodeRequest.json();
   if (geocodeResponse.status !== "OK") {
+    console.log('geocode error moment. check it out:')
+    console.log(geocodeResponse)
     return Response.json({
       error: true,
       message: "We were unable to locate the address you provided",
