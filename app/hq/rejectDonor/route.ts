@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       );
       let send = await client.messages.create({
         body: `Your request for blood donation has been rejected. Please contact JIPMER blood bank for more information.`,
-        from: `+16467987493`,
+        from: `+17753209450`,
         to: `+91${donor[0].phone}`,
       }).catch(() => {
         return Response.json({
