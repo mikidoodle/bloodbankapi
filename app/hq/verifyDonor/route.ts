@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       }
       let send = await client.messages.create({
         body: `You've been verified as a donor for blood type ${bloodtype}! Please contact the JIPMER blood bank if there are any issues.`,
-        from: `+16467987493`,
+        from: `+17753209450`,
         to: `+91${donor[0].phone}`,
       });
       console.log(send);

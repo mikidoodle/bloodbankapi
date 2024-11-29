@@ -92,7 +92,7 @@ async function sendOTP(phone: string, otp: number) {
   console.log(phone);
   let send = await client.messages.create({
     body: `Thank you for signing up with JIPMER Blood Bank! Your OTP is ${otp}`,
-    from: `+16467987493`,
+    from: `+17753209450`,
     to: `+91${phone}`,
   });
   console.log(send);

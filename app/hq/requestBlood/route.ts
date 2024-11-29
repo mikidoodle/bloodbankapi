@@ -128,7 +128,7 @@ async function sendSMS(
     body: `JIPMER Blood Center requires ${units} unit${
       units == 1 ? "" : "s"
     } of ${type} blood. Please contact ${contact} if you can donate.`,
-    from: `+16467987493`,
+    from: `+17753209450`,
     to: `+91${phone}`,
   });
   console.log(send);

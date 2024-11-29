@@ -101,7 +101,7 @@ async function sendSMS(phone: string, name: string) {
   phone = phone.replace("+91", "");
   let send = await client.messages.create({
     body: `Happy Birthday ${name}! Celebrate your birthday by donating blood at the JIPMER Blood Center today!`,
-    from: `+16467987493`,
+    from: `+17753209450`,
     to: `+91${phone}`,
   });
   console.log(send);
