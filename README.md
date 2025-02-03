@@ -1,5 +1,6 @@
 ## Blood Bank API
-> ⚠️ As of Feb 1, 2025, this code is **no longer compatible** with the current [mikidoodle/bloodbank](https://github.com/mikidoodle/bloodbank) version and will be archived as I add support for multiple blood banks and make the move from Next.js API functions (which tbh was a dumb decision) to NestJS. Look for the updated NestJS version in a week.
+> ⚠️ As of Feb 1, 2025, this code is **no longer compatible** with the current app and will be archived as I add support for multiple blood banks and make the move from Next.js API functions (which tbh was a dumb decision) to NestJS. Here's the updated repo: [openbloodfdn/core](https://github.com/openbloodfdn/core)
+----
 
 This is the backend for the [JIPMER Blood Bank Project](https://github.com/mikidoodle/bloodbank).
 
